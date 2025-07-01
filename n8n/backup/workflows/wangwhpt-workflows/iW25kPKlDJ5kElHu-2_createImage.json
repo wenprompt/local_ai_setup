@@ -1,0 +1,391 @@
+{
+  "name": "2_createImage",
+  "nodes": [
+    {
+      "parameters": {
+        "workflowInputs": {
+          "values": [
+            {
+              "name": "imageTitle"
+            },
+            {
+              "name": "imagePrompt"
+            },
+            {
+              "name": "chatID"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.executeWorkflowTrigger",
+      "typeVersion": 1.1,
+      "position": [
+        -960,
+        -200
+      ],
+      "id": "c287cf60-bb35-413a-8cc5-563cee2f2420",
+      "name": "When Executed by Another Workflow"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.imagePrompt }}",
+        "options": {
+          "systemMessage": "=# Role\n\nYou are an expert image prompt engineer. Your role is to take a simple image topic or concept and expand it into a fully detailed image prompt that can be fed into a text-to-image generation model\n\n## Prompt Instructions\nYour detailed prompt must clearly descibe the following\n\n1) Main Subject: what is the primary focus of the image?\n2) Background/setting: what is happening in the background or environment?\n3) Style: specify the visual style (e.g. hyper-realistic, digital painting, watercolor, anime, cartoon, 3D render, etc)\n4) Mood/Lighting: describe the emotional tone and lighting (e.g., soft warm sunset, moody storm clouds, futuristic neon lights, etc)\n5) Additional Details: mention any specific objects, clothing colors, textures, or notable features that should appear\n6) Sizing: make sure there are adequate paddings around the image so that no words or image are cut off\n7) Words: keep less than 7 words inside the image\n\n## Output Format\n- begin with a clean, natural-sounding descriptive prompt that integrates all of the above elements seamlessly\n- the description should sound like its written specifically for an AI agent to generate a professional, high quality image\n- avoid repeating the original topic verbatim - instead, reframe it into a vivid scene or visual concept\n- make sure the image and all the words inside the image will be contained properly inside the size with proper paddings so that nothing is cut off, there should also be minimal text in the generated image\n\n## example\n- input: a futuristic city\n- output: a sprawling futuristic city at night, glowing with neon lights in shades of blue and purple. towering skyscrapers with sleek, glass facades line the horizon. flying cars zoom between the buildings under a cloudy, electric sky. the streets below are busting with holographic advertisements and people are wearing high tech fashion. Digital painting style, highly detailed, cinematic perspective, moody atmosphere with soft neon reflections on wet pavement."
+        }
+      },
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.9,
+      "position": [
+        -740,
+        -200
+      ],
+      "id": "5716c2e7-aa3e-47ba-8e4b-c7d783b31eb2",
+      "name": "AI Agent"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "gpt-4o-mini"
+        },
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        -800,
+        20
+      ],
+      "id": "f74414a6-9301-4f06-ab53-e10fd4b183be",
+      "name": "OpenAI Chat Model",
+      "credentials": {
+        "openAiApi": {
+          "id": "JoADOk7bBkHrcriK",
+          "name": "OpenAi account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "toBinary",
+        "sourceProperty": "data[0].b64_json",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.convertToFile",
+      "typeVersion": 1.1,
+      "position": [
+        -140,
+        -200
+      ],
+      "id": "b5bf2c5c-bab4-477b-bff1-d52266526519",
+      "name": "Convert to File"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.openai.com/v1/images/generations",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "model",
+              "value": "gpt-image-1"
+            },
+            {
+              "name": "prompt",
+              "value": "={{ $json.output.replace(/\"/g, '') }}"
+            },
+            {
+              "name": "size",
+              "value": "1024x1024"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        -380,
+        -200
+      ],
+      "id": "7e301a14-67b4-41a1-b66b-3107f0b1e699",
+      "name": "Generate Image",
+      "credentials": {
+        "httpBearerAuth": {
+          "id": "NjYLnaeHLvLIeF6p",
+          "name": "Bearer Auth account"
+        },
+        "httpHeaderAuth": {
+          "id": "IW4kbfDJ0BMiT28B",
+          "name": "OpenAI Auth"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "name": "={{ $('When Executed by Another Workflow').item.json.imageTitle }}.png",
+        "driveId": {
+          "__rl": true,
+          "mode": "list",
+          "value": "My Drive"
+        },
+        "folderId": {
+          "__rl": true,
+          "value": "1IlSEJqOIyVdGPHIaWh_9Em13wH_k0GZK",
+          "mode": "list",
+          "cachedResultName": "n8n_marketing_agent",
+          "cachedResultUrl": "https://drive.google.com/drive/folders/1IlSEJqOIyVdGPHIaWh_9Em13wH_k0GZK"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleDrive",
+      "typeVersion": 3,
+      "position": [
+        120,
+        -60
+      ],
+      "id": "72e43ba2-3485-4b4e-90bf-96bff88df318",
+      "name": "Google Drive",
+      "credentials": {
+        "googleDriveOAuth2Api": {
+          "id": "08Lp622bXrgTzyyn",
+          "name": "Google Drive account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "append",
+        "documentId": {
+          "__rl": true,
+          "value": "1ydtPhGGoMLQpC0GvnCTgiYdeBcVwLdBqC8udoIJ1Y_A",
+          "mode": "list",
+          "cachedResultName": "n8n_marketing_log",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ydtPhGGoMLQpC0GvnCTgiYdeBcVwLdBqC8udoIJ1Y_A/edit?usp=drivesdk"
+        },
+        "sheetName": {
+          "__rl": true,
+          "value": "gid=0",
+          "mode": "list",
+          "cachedResultName": "Sheet1",
+          "cachedResultUrl": "https://docs.google.com/spreadsheets/d/1ydtPhGGoMLQpC0GvnCTgiYdeBcVwLdBqC8udoIJ1Y_A/edit#gid=0"
+        },
+        "columns": {
+          "mappingMode": "defineBelow",
+          "value": {
+            "Request": "={{ $('When Executed by Another Workflow').item.json.imagePrompt }}",
+            "ID": "={{ $json.id }}",
+            "Link": "={{ $json.webViewLink }}",
+            "Title": "={{ $('When Executed by Another Workflow').item.json.imageTitle }}",
+            "Type": "Image"
+          },
+          "matchingColumns": [],
+          "schema": [
+            {
+              "id": "Title",
+              "displayName": "Title",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Type",
+              "displayName": "Type",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            },
+            {
+              "id": "Request",
+              "displayName": "Request",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "ID",
+              "displayName": "ID",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Link",
+              "displayName": "Link",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true
+            },
+            {
+              "id": "Post",
+              "displayName": "Post",
+              "required": false,
+              "defaultMatch": false,
+              "display": true,
+              "type": "string",
+              "canBeUsedToMatch": true,
+              "removed": false
+            }
+          ],
+          "attemptToConvertTypes": false,
+          "convertFieldsToString": false
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.googleSheets",
+      "typeVersion": 4.5,
+      "position": [
+        340,
+        -60
+      ],
+      "id": "1961c68c-3dc3-46e7-a251-8a4fb43ac947",
+      "name": "Image Log",
+      "credentials": {
+        "googleSheetsOAuth2Api": {
+          "id": "FGcBFheuqeUMm9tF",
+          "name": "Google Sheets account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "content": "# Send Content",
+        "height": 240,
+        "width": 300,
+        "color": 6
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "typeVersion": 1,
+      "position": [
+        20,
+        -420
+      ],
+      "id": "ce9ab3a4-b9e7-42c2-8243-ff50b68a1653",
+      "name": "Sticky Note7"
+    },
+    {
+      "parameters": {
+        "operation": "sendPhoto",
+        "chatId": "={{ $('When Executed by Another Workflow').item.json.chatID }}",
+        "binaryData": true,
+        "additionalFields": {}
+      },
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        120,
+        -340
+      ],
+      "id": "fb01efee-358e-4429-8061-e7dcaa2276ca",
+      "name": "Send Photo",
+      "webhookId": "8fcbda9c-8396-41f7-8f2d-39e4ae4337c7",
+      "credentials": {
+        "telegramApi": {
+          "id": "t4l66DHI7iDh0nHk",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "When Executed by Another Workflow": {
+      "main": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [
+          {
+            "node": "Generate Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Chat Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "AI Agent",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to File": {
+      "main": [
+        [
+          {
+            "node": "Google Drive",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send Photo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Image": {
+      "main": [
+        [
+          {
+            "node": "Convert to File",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Google Drive": {
+      "main": [
+        [
+          {
+            "node": "Image Log",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1",
+    "callerPolicy": "workflowsFromSameOwner",
+    "errorWorkflow": "dMe2rTv2UDMGDYFL"
+  },
+  "staticData": null,
+  "pinData": {},
+  "triggerCount": 0,
+  "meta": {
+    "templateCredsSetupCompleted": true
+  }
+}
