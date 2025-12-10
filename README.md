@@ -4,7 +4,7 @@
 quickly bootstraps a fully featured Local AI and Low Code development
 environment including Ollama for your local LLMs, n8n for workflow automation, and Supabase for your database, vector store, and authentication.
 
-This is Cole's version with a couple of improvements and the addition of Supabase, Flowise, and Caddy!
+This is wenprompt's version with a couple of improvements and the addition of Supabase, Flowise, and Caddy!
 Also, the local RAG AI Agent workflows from the video will be automatically in your
 n8n instance if you use this setup instead of the base one provided by n8n!
 
@@ -12,13 +12,13 @@ n8n instance if you use this setup instead of the base one provided by n8n!
 
 - [Local AI community](https://thinktank.ottomator.ai/c/local-ai/18) forum over in the oTTomator Think Tank
 
-- [GitHub Kanban board](https://github.com/users/coleam00/projects/2/views/1) for feature implementation and bug squashing.
+- [GitHub Kanban board](https://github.com/users/wenprompt/projects/1/views/1) for feature implementation and bug squashing.
 
 - [Original Local AI Starter Kit](https://github.com/n8n-io/self-hosted-ai-starter-kit) by the n8n team
 
 ![n8n.io - Screenshot](https://raw.githubusercontent.com/n8n-io/self-hosted-ai-starter-kit/main/assets/n8n-demo.gif)
 
-Curated by <https://github.com/n8n-io> and <https://github.com/coleam00>, it combines the self-hosted n8n
+Curated by <https://github.com/n8n-io> and <https://github.com/wenprompt>, it combines the self-hosted n8n
 platform with a curated list of compatible AI products and components to
 quickly get started with building self-hosted AI workflows.
 
@@ -55,8 +55,8 @@ Before you begin, make sure you have the following software installed:
 Clone the repository and navigate to the project directory:
 
 ```bash
-git clone https://github.com/coleam00/local-ai-packaged.git
-cd local-ai-packaged
+git clone https://github.com/wenprompt/local_ai_setup.git
+cd local_ai_setup
 ```
 
 Before running the services, you need to set up your environment variables for Supabase following their [self-hosting guide](https://supabase.com/docs/guides/self-hosting/docker#securing-your-services).
@@ -176,7 +176,7 @@ Before running the above commands to pull the repo and install everything:
 
    - ufw enable
    - ufw allow 8000 && ufw allow 3000 && ufw allow 5678 && ufw allow 3002 && ufw allow 80 && ufw allow 443
-   - ufw allow 3001 (if you want to expose Flowise, you will have to set up the [environment variables](https://docs.flowiseai.com/configuration/environment-variables) to enable authentication)
+   - ufw allow 3007 (if you want to expose Flowise, you will have to set up the [environment variables](https://docs.flowiseai.com/configuration/environment-variables) to enable authentication)
    - ufw allow 11434 (if you want to expose Ollama)
    - ufw reload
 
@@ -288,7 +288,7 @@ and nodes. If you run into an issue, go to [support](#support).
 
 ## 🎥 Video walkthrough
 
-- [Cole's Guide to the Local AI Starter Kit](https://youtu.be/pOsO40HSbOo)
+- [Refer to another version of starterkit](https://youtu.be/pOsO40HSbOo)
 
 ## 🛍️ More AI templates
 
