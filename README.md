@@ -2,9 +2,9 @@
 
 **Self-hosted AI Package** is an open, docker compose template that
 quickly bootstraps a fully featured Local AI and Low Code development
-environment including Ollama for your local LLMs, Open WebUI for an interface to chat with your N8N agents, and Supabase for your database, vector store, and authentication.
+environment including Ollama for your local LLMs, n8n for workflow automation, and Supabase for your database, vector store, and authentication.
 
-This is Cole's version with a couple of improvements and the addition of Supabase, Open WebUI, Flowise, Langfuse, SearXNG, and Caddy!
+This is Cole's version with a couple of improvements and the addition of Supabase, Flowise, and Caddy!
 Also, the local RAG AI Agent workflows from the video will be automatically in your
 n8n instance if you use this setup instead of the base one provided by n8n!
 
@@ -15,8 +15,6 @@ n8n instance if you use this setup instead of the base one provided by n8n!
 - [GitHub Kanban board](https://github.com/users/coleam00/projects/2/views/1) for feature implementation and bug squashing.
 
 - [Original Local AI Starter Kit](https://github.com/n8n-io/self-hosted-ai-starter-kit) by the n8n team
-
-- Download my N8N + OpenWebUI integration [directly on the Open WebUI site.](https://openwebui.com/f/coleam/n8n_pipe/) (more instructions below)
 
 ![n8n.io - Screenshot](https://raw.githubusercontent.com/n8n-io/self-hosted-ai-starter-kit/main/assets/n8n-demo.gif)
 
@@ -35,9 +33,6 @@ most widely used database for AI agents
 ✅ [**Ollama**](https://ollama.com/) - Cross-platform LLM platform to install
 and run the latest local LLMs
 
-✅ [**Open WebUI**](https://openwebui.com/) - ChatGPT-like interface to
-privately interact with your local models and N8N agents
-
 ✅ [**Flowise**](https://flowiseai.com/) - No/low code AI agent
 builder that pairs very well with n8n
 
@@ -45,12 +40,7 @@ builder that pairs very well with n8n
 store with an comprehensive API. Even though you can use Supabase for RAG, this was
 kept unlike Postgres since it's faster than Supabase so sometimes is the better option.
 
-✅ [**SearXNG**](https://searxng.org/) - Open source, free internet metasearch engine which aggregates
-results from up to 229 search services. Users are neither tracked nor profiled, hence the fit with the local AI package.
-
 ✅ [**Caddy**](https://caddyserver.com/) - Managed HTTPS/TLS for custom domains
-
-✅ [**Langfuse**](https://langfuse.com/) - Open source LLM engineering platform for agent observability
 
 ## Prerequisites
 
@@ -92,15 +82,6 @@ Before running the services, you need to set up your environment variables for S
    DASHBOARD_PASSWORD=
    POOLER_TENANT_ID=
 
-   ############
-   # Langfuse credentials
-   ############
-
-   CLICKHOUSE_PASSWORD=
-   MINIO_ROOT_PASSWORD=
-   LANGFUSE_SALT=
-   NEXTAUTH_SECRET=
-   ENCRYPTION_KEY=
    ```
 
 > [!IMPORTANT]
@@ -114,11 +95,9 @@ Before running the services, you need to set up your environment variables for S
    ############
 
    N8N_HOSTNAME=n8n.yourdomain.com
-   WEBUI_HOSTNAME=:openwebui.yourdomain.com
-   FLOWISE_HOSTNAME=:flowise.yourdomain.com
-   SUPABASE_HOSTNAME=:supabase.yourdomain.com
-   OLLAMA_HOSTNAME=:ollama.yourdomain.com
-   SEARXNG_HOSTNAME=searxng.yourdomain.com
+   FLOWISE_HOSTNAME=flowise.yourdomain.com
+   SUPABASE_HOSTNAME=supabase.yourdomain.com
+   OLLAMA_HOSTNAME=ollama.yourdomain.com
    LETSENCRYPT_EMAIL=your-email-address
    ```
 
@@ -198,7 +177,6 @@ Before running the above commands to pull the repo and install everything:
    - ufw enable
    - ufw allow 8000 && ufw allow 3000 && ufw allow 5678 && ufw allow 3002 && ufw allow 80 && ufw allow 443
    - ufw allow 3001 (if you want to expose Flowise, you will have to set up the [environment variables](https://docs.flowiseai.com/configuration/environment-variables) to enable authentication)
-   - ufw allow 8080 (if you want to expose SearXNG)
    - ufw allow 11434 (if you want to expose Ollama)
    - ufw reload
 
@@ -236,21 +214,9 @@ to get started.
 5. If this is the first time you’re running the workflow, you may need to wait
    until Ollama finishes downloading Llama3.1. You can inspect the docker
    console logs to check on the progress.
-6. Make sure to toggle the workflow as active and copy the "Production" webhook URL!
-7. Open <http://localhost:3000/> in your browser to set up Open WebUI.
-   You’ll only have to do this once. You are NOT creating an account with Open WebUI in the
-   setup here, it is only a local account for your instance!
-8. Go to Workspace -> Functions -> Add Function -> Give name + description then paste in
-   the code from `n8n_pipe.py`
-
-   The function is also [published here on Open WebUI's site](https://openwebui.com/f/coleam/n8n_pipe/).
-
-9. Click on the gear icon and set the n8n_url to the production URL for the webhook
-   you copied in a previous step.
-10. Toggle the function on and now it will be available in your model dropdown in the top left!
+6. Make sure to toggle the workflow as active!
 
 To open n8n at any time, visit <http://localhost:5678/> in your browser.
-To open Open WebUI at any time, visit <http://localhost:3000/>.
 
 With your n8n instance, you’ll have access to over 400 integrations and a
 suite of basic and advanced AI nodes such as
@@ -268,7 +234,7 @@ language model and Qdrant as your vector store.
 
 ## Upgrading
 
-To update all containers to their latest versions (n8n, Open WebUI, etc.), run these commands:
+To update all containers to their latest versions (n8n, Flowise, etc.), run these commands:
 
 ```bash
 # Stop all services
